@@ -1,0 +1,26 @@
+{
+  "name": "demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "postinstall:copy-auth": "node -e \"require('fs').cpSync('node_modules/@junobuild/core/dist/workers/', './public/workers', {recursive: true});\"",
+    "postinstall": "npm run postinstall:copy-auth"
+  },
+  "devDependencies": {
+    "@junobuild/config": "^0.0.8",
+    "@junobuild/vite-plugin": "^0.0.14",
+    "autoprefixer": "^10.4.19",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@junobuild/core": "^0.0.52",
+    "nanoid": "^5.0.7"
+  }
+}
