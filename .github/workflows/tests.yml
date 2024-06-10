@@ -12,13 +12,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Prepare
-        uses: ./.github/actions/prepare
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
       - name: Install Juno CLI
         run: npm i -g @junobuild/cli
-      - name: Install demo dependencies
-        run: npm ci
-        working-directory: demo
       - name: Run emulator
         run: juno dev start &
         working-directory: demo
@@ -32,6 +31,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare
         uses: ./.github/actions/prepare
+      - name: Install demo dependencies
+        run: npm ci
+        working-directory: demo
       - name: Run tests
         run: npm run e2e
 
