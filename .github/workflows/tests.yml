@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Prepare
+        uses: ./.github/actions/prepare
       - name: Run tests
         run: npm run e2e
 
