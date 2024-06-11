@@ -148,6 +148,12 @@ Return to the root directory and execute the tests:
 npm run e2e
 ```
 
+## 🚧 Limitations
+
+Currently, the library's fixtures cannot be implemented with Playwright's ability to [load existing authenticated state](https://playwright.dev/docs/auth). Playwright currently does not support IndexedDB for such features. This limitation is tracked in their [GitHub issue #11164](https://github.com/microsoft/playwright/issues/11164).
+
+While it is technically possible to use local storage instead of IndexedDB, this approach is generally discouraged as it does not reflect how identities are stored in the browser. We prefer to adhere to best practices for testing to ensure the most accurate simulation of real-world scenarios.
+
 ## 🧑‍🤝‍🧑 Community
 
 - [Forum](https://forum.dfinity.org/)
