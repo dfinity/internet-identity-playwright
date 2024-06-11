@@ -1,6 +1,6 @@
 import {test as base} from '@playwright/test';
+import {InternetIdentityPage} from './page-objects/InternetIdentityPage';
 import {LoginPage} from './page-objects/LoginPage';
-import {InternetIdentityPage} from "./page-objects/InternetIdentityPage";
 
 interface InternetIdentityFixtures {
   loginPage: LoginPage;
