@@ -2,7 +2,6 @@
   "name": "@dfinity/internet-identity-playwright",
   "version": "0.0.1",
   "description": "A Playwright library to simplify the integration of Internet Identity authentication in E2E tests.",
-  "private": true,
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
