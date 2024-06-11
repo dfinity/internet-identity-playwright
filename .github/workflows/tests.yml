@@ -41,8 +41,6 @@ jobs:
       - name: Install demo dependencies
         run: npm ci
         working-directory: demo
-      - name: Install browsers and system dependencies
-        run: npx playwright install --with-deps
       - name: Run tests
         run: npm run e2e:ci
 
