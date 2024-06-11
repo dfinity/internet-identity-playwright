@@ -1,16 +1,16 @@
-import {testWithInternetIdentity} from '../src';
+import {testWithII} from '../src';
 
 const loginSelector = '#login';
 const logoutSelector = '#logout';
 
-testWithInternetIdentity.describe('without selector', () => {
-  testWithInternetIdentity('should sign-in with a new user', async ({page, loginPage}) => {
+testWithII.describe('without selector', () => {
+  testWithII('should sign-in with a new user', async ({page, loginPage}) => {
     await page.goto('/');
 
     await loginPage.signInWithNewUser();
   });
 
-  testWithInternetIdentity(
+  testWithII(
     'should sign-in with an existing new user',
     async ({page, loginPage}) => {
       await page.goto('/');
@@ -24,14 +24,14 @@ testWithInternetIdentity.describe('without selector', () => {
   );
 });
 
-testWithInternetIdentity.describe('with selector', () => {
-  testWithInternetIdentity('should sign-in with a new user', async ({page, loginPage}) => {
+testWithII.describe('with selector', () => {
+  testWithII('should sign-in with a new user', async ({page, loginPage}) => {
     await page.goto('/');
 
     await loginPage.signInWithNewUser({selector: loginSelector});
   });
 
-  testWithInternetIdentity(
+  testWithII(
     'should sign-in with an existing new user',
     async ({page, loginPage}) => {
       await page.goto('/');

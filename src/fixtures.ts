@@ -5,7 +5,7 @@ interface InternetIdentityFixtures {
   loginPage: LoginPage;
 }
 
-export const testWithInternetIdentity = base.extend<InternetIdentityFixtures>({
+export const testWithII = base.extend<InternetIdentityFixtures>({
   loginPage: async ({page, context}, use) => {
     const loginPage = new LoginPage({page, context});
     await use(loginPage);
