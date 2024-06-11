@@ -25,14 +25,17 @@ export class InternetIdentityPage {
    * @param {Object} params - The parameters for the waitReady method.
    * @param {string} params.url - The root URL of the Internet Identity page. e.g. https://identity.internetcomputer.org, http://localhot:4973 or http://127.0.0.1:5987
    * @param {string} [params.canisterId] - An optional canister ID. If provided, will be added to the url parameter.
+   * @param {number} [params.timeout] - } [params.timeout] - An optional timeout period in milliseconds for the function to wait until Internet Identity is mounted. Defaults to 60000 milliseconds.
    * @returns {Promise<void>} A promise that resolves when the page is ready.
    */
   waitReady = async ({
     url: rootUrl,
-    canisterId
+    canisterId,
+    timeout = 60000
   }: {
     url: string;
     canisterId?: string;
+    timeout?: number;
   }): Promise<void> => {
     const {host: containerHost, protocol} = new URL(rootUrl);
 
@@ -52,6 +55,8 @@ export class InternetIdentityPage {
       }
     };
 
+    const retryInMilliseconds = 500;
+
     const waitInternetIdentityReady = async ({
       count
     }: {
@@ -69,12 +74,12 @@ export class InternetIdentityPage {
         return 'timeout';
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, retryInMilliseconds));
 
       return await waitInternetIdentityReady({count: nextCount});
     };
 
-    const status = await waitInternetIdentityReady({count: 60000 / 500});
+    const status = await waitInternetIdentityReady({count: timeout / retryInMilliseconds});
     expect(status).toEqual('ready');
 
     await expect(this.page).toHaveTitle('Internet Identity');

@@ -89,6 +89,18 @@ testWithII.beforeEach(async ({iiPage, browser}) => {
 });
 ```
 
+The function also accepts an optional timeout parameter to specify how long the function should wait for Internet Identity to be mounted, with a default value of 60000 milliseconds.
+
+```javascript
+testWithII.beforeEach(async ({iiPage, browser}) => {
+  const url = 'http://127.0.0.1:4943';
+  const canisterId = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
+  const timeout = 30000;
+
+  await iiPage.waitReady({url, canisterId, timeout});
+});
+```
+
 ### 4. Run Your Tests
 
 Run your Playwright tests as usual.
