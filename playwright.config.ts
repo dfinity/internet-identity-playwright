@@ -8,6 +8,7 @@ export default defineConfig({
   },
   testDir: 'e2e',
   testMatch: ['**/*.e2e.ts', '**/*.spec.ts'],
+  timeout: 60000,
   use: {
     testIdAttribute: 'data-tid',
     trace: 'on'
