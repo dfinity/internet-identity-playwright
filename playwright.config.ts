@@ -1,5 +1,7 @@
 import {defineConfig, devices} from '@playwright/test';
 
+const DEV = (process.env.NODE_ENV ?? 'production') === 'development';
+
 export default defineConfig({
   webServer: {
     command: 'npm run dev',
@@ -11,7 +13,8 @@ export default defineConfig({
   timeout: 60000,
   use: {
     testIdAttribute: 'data-tid',
-    trace: 'on'
+    trace: 'on',
+    ...(DEV && {headless: false})
   },
   projects: [
     {

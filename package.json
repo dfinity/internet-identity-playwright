@@ -1,7 +1,7 @@
 {
   "name": "@dfinity/internet-identity-playwright",
   "version": "0.0.1",
-  "description": "A Playwright library to simplify the integration of Internet Identity authentication in E2E tests. ",
+  "description": "A Playwright library to simplify the integration of Internet Identity authentication in E2E tests.",
   "private": true,
   "license": "Apache-2.0",
   "repository": {
@@ -47,10 +47,11 @@
     "build": "tsc --noEmit && node rmdir.mjs && node esbuild.mjs && npm run ts-declaration",
     "lint": "eslint --max-warnings 0 \"src/**/*\"",
     "dev": "npm --prefix demo run dev",
-    "e2e": "playwright test",
+    "e2e": "NODE_ENV=development playwright test",
     "e2e:ci": "playwright test --reporter=html"
   },
   "devDependencies": {
+    "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
