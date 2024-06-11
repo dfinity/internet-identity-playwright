@@ -1,4 +1,4 @@
-import {Browser, expect, type Page} from '@playwright/test';
+import {expect, type Browser, type Page} from '@playwright/test';
 
 /**
  * A page object to test Internet Identity.
@@ -71,7 +71,7 @@ export class InternetIdentityPage {
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      return waitInternetIdentityReady({count: nextCount});
+      return await waitInternetIdentityReady({count: nextCount});
     };
 
     const status = await waitInternetIdentityReady({count: 60000 / 500});
