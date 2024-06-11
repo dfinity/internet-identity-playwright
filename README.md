@@ -115,13 +115,19 @@ You can find an example test in the following file: [login.spec.ts](./e2e/login.
 
 To run these tests locally, you'll need to install the Juno CLI. Follow the steps below:
 
-1. Install Juno CLI:
+1. Install Docker:
+
+Make sure you have Docker installed on your machine ([Windows](https://docs.docker.com/desktop/install/windows-install/), [MacOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)).
+
+> For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
+
+2. Install Juno CLI:
 
 ```bash
 npm i -g @junobuild/cli
 ```
 
-2. Start the Demo Application:
+3. Start the Demo Application:
 
 Navigate to the [demo](./demo) directory and start the application using the Juno CLI:
 
@@ -130,7 +136,7 @@ cd demo
 juno dev start
 ```
 
-3. Run the Tests:
+4. Run the Tests:
 
 Return to the root directory and execute the tests:
 
