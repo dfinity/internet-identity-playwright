@@ -52,11 +52,7 @@ testWithII('should sign-in with a new user', async ({page, loginPage}) => {
 testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
   await page.goto('/');
 
-  const identity = await loginPage.signInWithNewIdentity();
-
-  await page.locator('#logout').click();
-
-  await loginPage.signInWithIdentity({identity});
+  await loginPage.signInWithIdentity({identity: 10003});
 });
 ```
 
@@ -74,11 +70,7 @@ testWithII('should sign-in with a new user', async ({page, loginPage}) => {
 testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
   await page.goto('/');
 
-  const identity = await loginPage.signInWithNewIdentity({selector: loginSelector});
-
-  await page.locator(logoutSelector).click();
-
-  await loginPage.signInWithIdentity({identity, selector: loginSelector});
+  await loginPage.signInWithIdentity({identity: 10003, selector: loginSelector});
 });
 ```
 
