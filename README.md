@@ -43,34 +43,34 @@ import {testWithII} from '@dfinity/internet-identity-playwright';
 Use the extended fixtures in your tests to perform authentication flows.
 
 ```javascript
-testWithII('should sign-in with a new user', async ({page, loginPage}) => {
+testWithII('should sign-in with a new user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await loginPage.signInWithNewIdentity();
+  await iiPage.signInWithNewIdentity();
 });
 
-testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
+testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await loginPage.signInWithIdentity({identity: 10003});
+  await iiPage.signInWithIdentity({identity: 10003});
 });
 ```
 
-The `loginPage` object represents the page of your application that contains the call to action to start the authentication flow with Internet Identity. By default, the fixture will search for a button identified by the attribute `[data-tid=login-button]`. You can customize this behavior by providing your own selector.
+The `iiPage` object represents the page of your application that contains the call to action to start the authentication flow with Internet Identity. By default, the fixture will search for a button identified by the attribute `[data-tid=login-button]`. You can customize this behavior by providing your own selector.
 
 ```javascript
 const loginSelector = '#login';
 
-testWithII('should sign-in with a new user', async ({page, loginPage}) => {
+testWithII('should sign-in with a new user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await loginPage.signInWithNewIdentity({selector: loginSelector});
+  await iiPage.signInWithNewIdentity({selector: loginSelector});
 });
 
-testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
+testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await loginPage.signInWithIdentity({identity: 10003, selector: loginSelector});
+  await iiPage.signInWithIdentity({identity: 10003, selector: loginSelector});
 });
 ```
 

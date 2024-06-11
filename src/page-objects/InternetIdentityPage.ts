@@ -1,4 +1,4 @@
-import {expect, type Browser, type Page} from '@playwright/test';
+import {expect, type Browser, type BrowserContext, type Page} from '@playwright/test';
 
 /**
  * A page object to test Internet Identity.
@@ -6,17 +6,20 @@ import {expect, type Browser, type Page} from '@playwright/test';
 export class InternetIdentityPage {
   private readonly page: Page;
   private readonly browser: Browser;
+  private readonly context: BrowserContext;
 
   /**
    * Creates an instance of InternetIdentityPage.
    *
    * @param {Object} params - The parameters for the constructor.
    * @param {Page} params.page - The Page instance to interact with Internet Identity a single tab in a Browser.
+   * @param {BrowserContext} params.context - The isolated BrowserContext instance provided by Playwright, created for each test.
    * @param {Browser} params.browser - The browser launched by Playwright.
    */
-  constructor({page, browser}: {page: Page; browser: Browser}) {
+  constructor({page, context, browser}: {page: Page; context: BrowserContext; browser: Browser}) {
     this.page = page;
     this.browser = browser;
+    this.context = context;
   }
 
   /**
@@ -86,5 +89,64 @@ export class InternetIdentityPage {
 
     const registerButton = this.page.locator('#registerButton');
     expect(registerButton).not.toBeNull();
+  };
+
+  /**
+   * Signs in and create a new user.
+   *
+   * @param {Object} [params] - The optional arguments for the sign-in method.
+   * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
+   * @returns {Promise<number>} A promise that resolves to the new identity number.
+   */
+  signInWithNewIdentity = async (params?: {selector?: string}): Promise<number> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(params?.selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    await iiPage.locator('#registerButton').click();
+    await iiPage.locator('[data-action=construct-identity]').click();
+
+    await iiPage.locator('input#captchaInput').fill('a');
+    await iiPage.locator('#confirmRegisterButton').click();
+
+    const identity = await iiPage.locator('#userNumber').textContent();
+    expect(identity).not.toBeNull();
+
+    await iiPage.locator('#displayUserContinue').click();
+    await iiPage.waitForEvent('close');
+    expect(iiPage.isClosed()).toBe(true);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return parseInt(identity!);
+  };
+
+  /**
+   * Signs in with an existing identity.
+   * @param {Object} params - The parameters for the sign-in method.
+   * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
+   * @param {number} params.identity - The identity number.
+   * @returns {Promise<void>} A promise that resolves when the sign-in process is complete.
+   */
+  signInWithIdentity = async ({
+    selector,
+    identity
+  }: {
+    selector?: string;
+    identity: number;
+  }): Promise<void> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    await iiPage.locator(`[data-anchor-id='${identity}']`).click();
+    await iiPage.locator('[data-action=cancel]').click();
+    await iiPage.waitForEvent('close');
+    expect(iiPage.isClosed()).toBe(true);
   };
 }
