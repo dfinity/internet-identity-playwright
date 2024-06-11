@@ -90,6 +90,7 @@ export class InternetIdentityPage {
     const registerButton = this.page.locator('#registerButton');
     expect(registerButton).not.toBeNull();
   };
+
   /**
    * Signs in and create a new user.
    *
