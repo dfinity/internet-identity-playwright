@@ -123,6 +123,7 @@ To run these tests locally, you'll need to install the Juno CLI. Follow the step
 
 Make sure you have Docker installed on your machine ([Windows](https://docs.docker.com/desktop/install/windows-install/), [MacOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)).
 
+> [!NOTE]
 > For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
 
 2. Install Juno CLI:
