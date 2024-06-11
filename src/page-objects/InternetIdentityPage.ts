@@ -11,7 +11,7 @@ export class InternetIdentityPage {
      * Creates an instance of InternetIdentityPage.
      *
      * @param {Object} params - The parameters for the constructor.
-     * @param {Page} params.page - The Page instance to interact with Internet Identity a single tab in a Browser,
+     * @param {Page} params.page - The Page instance to interact with Internet Identity a single tab in a Browser.
      * @param {Browser} params.browser - The browser launched by Playwright.
      */
     constructor({page, browser}: { page: Page; browser: Browser }) {
