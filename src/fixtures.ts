@@ -1,20 +1,13 @@
 import {test as base} from '@playwright/test';
 import {InternetIdentityPage} from './page-objects/InternetIdentityPage';
-import {LoginPage} from './page-objects/LoginPage';
 
 interface InternetIdentityFixtures {
-  loginPage: LoginPage;
   iiPage: InternetIdentityPage;
 }
 
 export const testWithII = base.extend<InternetIdentityFixtures>({
-  loginPage: async ({page, context}, use) => {
-    const loginPage = new LoginPage({page, context});
-    await use(loginPage);
-  },
-
-  iiPage: async ({page, browser}, use) => {
-    const iiPage = new InternetIdentityPage({page, browser});
+  iiPage: async ({page, browser, context}, use) => {
+    const iiPage = new InternetIdentityPage({page, context, browser});
     await use(iiPage);
   }
 });

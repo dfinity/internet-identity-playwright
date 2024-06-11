@@ -1,2 +1,2 @@
 export * from './fixtures';
-export * from './page-objects/LoginPage';
+export * from './page-objects/InternetIdentityPage';

@@ -11,37 +11,37 @@ testWithII.beforeEach(async ({iiPage, browser}) => {
 });
 
 testWithII.describe('without selector', () => {
-  testWithII('should sign-in with a new user', async ({page, loginPage}) => {
+  testWithII('should sign-in with a new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    await loginPage.signInWithNewIdentity();
+    await iiPage.signInWithNewIdentity();
   });
 
-  testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
+  testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    const identity = await loginPage.signInWithNewIdentity();
+    const identity = await iiPage.signInWithNewIdentity();
 
     await page.locator('#logout').click();
 
-    await loginPage.signInWithIdentity({identity});
+    await iiPage.signInWithIdentity({identity});
   });
 });
 
 testWithII.describe('with selector', () => {
-  testWithII('should sign-in with a new user', async ({page, loginPage}) => {
+  testWithII('should sign-in with a new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    await loginPage.signInWithNewIdentity({selector: loginSelector});
+    await iiPage.signInWithNewIdentity({selector: loginSelector});
   });
 
-  testWithII('should sign-in with an existing new user', async ({page, loginPage}) => {
+  testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    const identity = await loginPage.signInWithNewIdentity({selector: loginSelector});
+    const identity = await iiPage.signInWithNewIdentity({selector: loginSelector});
 
     await page.locator(logoutSelector).click();
 
-    await loginPage.signInWithIdentity({identity, selector: loginSelector});
+    await iiPage.signInWithIdentity({identity, selector: loginSelector});
   });
 });
