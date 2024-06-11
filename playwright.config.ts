@@ -10,8 +10,7 @@ export default defineConfig({
   testMatch: ['**/*.e2e.ts', '**/*.spec.ts'],
   use: {
     testIdAttribute: 'data-tid',
-    trace: 'on',
-    headless: false
+    trace: 'on'
   },
   projects: [
     {
