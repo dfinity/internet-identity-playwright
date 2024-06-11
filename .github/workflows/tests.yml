@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: Run emulator
-        run: juno dev start &
+        run: nohup juno dev start > juno.log 2>&1 & disown
         working-directory: demo
 
   tests:
