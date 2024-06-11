@@ -7,13 +7,7 @@ testWithII.beforeEach(async ({iiPage, browser}) => {
     const DOCKER_CONTAINER_URL = 'http://127.0.0.1:5987';
     const DOCKER_INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 
-    const {host: containerHost, protocol} = new URL(DOCKER_CONTAINER_URL);
-
-    const url = browser.browserType().name() === "webkit"
-        ? `${protocol}//${containerHost}?canisterId=${DOCKER_INTERNET_IDENTITY_ID}`
-        : `${protocol}//${DOCKER_INTERNET_IDENTITY_ID}.${containerHost.replace('127.0.0.1', 'localhost')}`;
-
-    await iiPage.waitReady({url});
+    await iiPage.waitReady({url: DOCKER_CONTAINER_URL, canisterId: DOCKER_INTERNET_IDENTITY_ID});
 });
 
 testWithII.describe('without selector', () => {

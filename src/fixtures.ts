@@ -13,8 +13,8 @@ export const testWithII = base.extend<InternetIdentityFixtures>({
     await use(loginPage);
   },
 
-  iiPage: async ({page, context}, use) => {
-    const iiPage = new InternetIdentityPage({page, context});
+  iiPage: async ({page, browser}, use) => {
+    const iiPage = new InternetIdentityPage({page, browser});
     await use(iiPage);
   }
 });
