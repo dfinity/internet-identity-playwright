@@ -27,7 +27,7 @@
     "e2e",
     "test"
   ],
-  "homepage": "https://github.com/dfinity/ic-js#readme",
+  "homepage": "https://github.com/dfinity/internet-identity-playwright#readme",
   "type": "module",
   "main": "dist/index.js",
   "module": "./dist/index.js",
