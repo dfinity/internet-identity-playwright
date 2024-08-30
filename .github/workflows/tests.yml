@@ -28,7 +28,7 @@ jobs:
       - name: Run tests
         run: |
           cd demo
-          juno dev start &
+          juno dev start --headless &
           cd ..
           npm run e2e:ci
 
