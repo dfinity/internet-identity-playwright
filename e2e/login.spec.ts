@@ -7,7 +7,11 @@ testWithII.beforeEach(async ({iiPage, browser}) => {
   const DOCKER_CONTAINER_URL = 'http://127.0.0.1:5987';
   const DOCKER_INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 
-  await iiPage.waitReady({url: DOCKER_CONTAINER_URL, canisterId: DOCKER_INTERNET_IDENTITY_ID});
+  await iiPage.waitReady({
+    url: DOCKER_CONTAINER_URL,
+    canisterId: DOCKER_INTERNET_IDENTITY_ID,
+    timeout: 120000
+  });
 });
 
 testWithII.describe('without selector', () => {
