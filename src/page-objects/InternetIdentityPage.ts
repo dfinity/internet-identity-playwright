@@ -145,7 +145,6 @@ export class InternetIdentityPage {
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     await iiPage.locator(`[data-anchor-id='${identity}']`).click();
-    await iiPage.locator('[data-action=cancel]').click();
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
   };
