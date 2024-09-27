@@ -6,6 +6,7 @@ interface InternetIdentityFixtures {
 }
 
 export const testWithII = base.extend<InternetIdentityFixtures>({
+  // eslint-disable-next-line local-rules/prefer-object-params
   iiPage: async ({page, browser, context}, use) => {
     const iiPage = new InternetIdentityPage({page, context, browser});
     await use(iiPage);
