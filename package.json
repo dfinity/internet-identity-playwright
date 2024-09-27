@@ -50,7 +50,6 @@
     "e2e:ci": "playwright test --reporter=html"
   },
   "devDependencies": {
-    "@dfinity/eslint-config-oisy-wallet": "^0.0.2",
     "@types/node": "^20.14.2",
     "esbuild": "^0.23.1",
     "prettier": "^3.3.3",
@@ -62,5 +61,8 @@
   },
   "peerDependencies": {
     "@playwright/test": "^1.44.1"
+  },
+  "dependencies": {
+    "@dfinity/eslint-config-oisy-wallet": "^0.0.3"
   }
 }
