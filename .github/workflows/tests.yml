@@ -11,8 +11,6 @@ jobs:
       cache-hit: ${{ steps.cache.outputs.cache-hit }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Prepare
         uses: ./.github/actions/prepare
       - name: Install demo dependencies
@@ -32,6 +30,8 @@ jobs:
     needs: setup
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Run tests
         run: |
           cd demo
@@ -44,6 +44,8 @@ jobs:
     needs: setup
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Run tests with captcha
         run: |
           cd demo
