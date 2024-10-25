@@ -5,10 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup:
+  tests:
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
 
     steps:
       - name: Checkout
@@ -18,23 +16,14 @@ jobs:
       - name: Install demo dependencies
         run: npm ci
         working-directory: demo
-      - name: Cache Docker layers
-        id: cache
+      - name: Cache Docker layers for default image
         uses: actions/cache@v3
         with:
           path: /home/runner/.docker
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          key: ${{ runner.os }}-docker-default-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-docker-
-
-  tests:
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Run tests
+            ${{ runner.os }}-docker-default-
+      - name: Run tests without captcha
         run: |
           cd demo
           docker compose up -d
@@ -43,17 +32,28 @@ jobs:
 
   tests_captcha:
     runs-on: ubuntu-latest
-    needs: setup
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Prepare
+        uses: ./.github/actions/prepare
+      - name: Install demo dependencies
+        run: npm ci
+        working-directory: demo
+      - name: Cache Docker layers for captcha image
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.docker
+          key: ${{ runner.os }}-docker-captcha-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-captcha-
       - name: Run tests with captcha
         run: |
           cd demo
           docker compose -f docker-compose.captcha.yml up -d
           cd ..
-          npm run e2e:captcha:ci
+          npm run e2e:captcha
 
   may-merge:
     needs: ['tests', 'tests_captcha']
