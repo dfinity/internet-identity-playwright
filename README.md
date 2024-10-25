@@ -74,6 +74,16 @@ testWithII('should sign-in with an existing new user', async ({page, iiPage}) =>
 });
 ```
 
+The plugin defaults to an Internet Identity sign-in flow that does not require captcha. If you wish to set up a test that requires this validation, you can pass the option `captcha` set to `true` when initializing a new user:
+
+```javascript
+testWithII('should sign-in with a new user when II requires a captcha', async ({page, iiPage}) => {
+  await page.goto('/');
+
+  await iiPage.signInWithNewIdentity({captcha: true});
+});
+```
+
 ### 3. Wait for Internet Identity (optional)
 
 You might encounter scenarios where you perform tests against a local replica started in parallel with your tests, commonly when automating the tests in a CI environment. The library also exposes a fixture that lets you wait for Internet Identity to be ready.
