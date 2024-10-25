@@ -52,7 +52,7 @@
     "e2e:captcha:ci": "playwright test --reporter=html e2e/captcha.spec"
   },
   "devDependencies": {
-    "@dfinity/eslint-config-oisy-wallet": "^0.0.3",
+    "@dfinity/eslint-config-oisy-wallet": "^0.0.6",
     "@types/node": "^20.14.2",
     "esbuild": "^0.23.1",
     "prettier": "^3.3.3",
