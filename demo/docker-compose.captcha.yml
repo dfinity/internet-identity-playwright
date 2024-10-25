@@ -1,0 +1,12 @@
+services:
+  juno-satellite:
+    image: junobuild/satellite:0.0.38
+    ports:
+      - 5987:5987
+    volumes:
+      - juno_satellite_captcha:/juno/.juno
+      - ./juno.dev.config.js:/juno/juno.dev.config.js
+      - ./target/deploy:/juno/target/deploy/
+
+volumes:
+  juno_satellite_captcha:

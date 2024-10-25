@@ -145,8 +145,22 @@ juno dev start
 
 Return to the root directory and execute the tests:
 
-```
+```bash
 npm run e2e
+```
+
+### Running Captcha Tests Locally
+
+The default test suite validates the use of Internet Identity without captcha requirements. To test a flow with captcha, run the following command instead of `juno dev start` in the `demo` directory:
+
+```bash
+docker compose -f docker-compose.captcha.yml up
+```
+
+Then, navigate to the root directory and run the dedicated test:
+
+```bash
+npm run e2e:captcha
 ```
 
 ## 🚧 Limitations
