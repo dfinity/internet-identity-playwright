@@ -114,7 +114,7 @@ export class InternetIdentityPage {
     await iiPage.locator('[data-action=construct-identity]').click();
 
     if (params?.captcha === true) {
-      await iiPage.locator('input#captchaInput').fill('a');
+      await iiPage.locator('input#captchaInput').fill('a', {timeout: 10000});
       await iiPage.locator('#confirmRegisterButton').click();
     }
 
