@@ -126,19 +126,13 @@ Make sure you have Docker installed on your machine ([Windows](https://docs.dock
 > [!NOTE]
 > For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
 
-2. Install Juno CLI:
+2. Start the Demo Application:
 
-```bash
-npm i -g @junobuild/cli
-```
-
-3. Start the Demo Application:
-
-Navigate to the [demo](./demo) directory and start the application using the Juno CLI:
+Navigate to the [demo](./demo) directory and start the application using Docker:
 
 ```bash
 cd demo
-juno dev start
+docker compose up
 ```
 
 4. Run the Tests:
@@ -151,7 +145,7 @@ npm run e2e
 
 ### Running Captcha Tests Locally
 
-The default test suite validates the use of Internet Identity without captcha requirements. To test a flow with captcha, run the following command instead of `juno dev start` in the `demo` directory:
+The default test suite validates the use of Internet Identity without captcha requirements. To test a flow with captcha, run the following command in the `demo` directory:
 
 ```bash
 docker compose -f docker-compose.captcha.yml up
