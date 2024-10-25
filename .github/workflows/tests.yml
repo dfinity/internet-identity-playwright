@@ -53,7 +53,7 @@ jobs:
           cd demo
           docker compose -f docker-compose.captcha.yml up -d
           cd ..
-          npm run e2e:captcha
+          npm run e2e:captcha:ci
 
   may-merge:
     needs: ['tests', 'tests_captcha']
