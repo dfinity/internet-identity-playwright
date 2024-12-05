@@ -176,4 +176,4 @@ While it is technically possible to use local storage instead of IndexedDB, this
 ## 🧑‍🤝‍🧑 Community
 
 - [Forum](https://forum.dfinity.org/)
-- [Discord](https://discord.gg/E9FxceAg2j)
+- [Discord](https://discord.internetcomputer.org)
