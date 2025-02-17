@@ -114,7 +114,7 @@ const showModal = () => {
   </div>
 </div>
 
-<div class="fixed inset-0 z-40 backdrop-blur-xl bg-white/30 flex items-center justify-center"></div>
+<div class="fixed inset-0 z-40 bg-white/30 dark:bg-lavender-blue-200/40 flex items-center justify-center backdrop-blur-xl"></div>
 `;
 };
 
