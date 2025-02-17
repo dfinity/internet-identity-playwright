@@ -22,7 +22,8 @@
   </head>
   <body class="bg-white dark:bg-black">
     <div class="relative isolate min-h-[100dvh]">
-      <main class="mx-auto max-w-screen-2xl py-16 px-8 md:px-24 tall:min-h-[calc(100dvh-128px)]">
+      <main
+        class="mx-auto max-w-(--breakpoint-2xl) py-16 px-8 md:px-24 [@media(min-height:800px)]:min-h-[calc(100dvh-128px)]">
         <h1 class="dark:text-white text-5xl md:text-6xl font-bold tracking-tight md:pt-24">
           Example App
         </h1>
@@ -37,7 +38,7 @@
       </main>
 
       <footer
-        class="mx-auto max-w-screen-2xl py-16 px-8 md:px-24 h-24 flex items-center justify-between md:justify-start md:gap-24 dark:text-white">
+        class="mx-auto max-w-(--breakpoint-2xl) py-16 px-8 md:px-24 h-24 flex items-center justify-between md:justify-start md:gap-24 dark:text-white">
         <span class="flex gap-2 items-baseline">
           <svg
             id="Layer_2"
