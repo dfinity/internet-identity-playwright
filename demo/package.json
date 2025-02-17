@@ -17,7 +17,7 @@
     "autoprefixer": "^10.4.20",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.12",
-    "vite": "^5.4.6"
+    "vite": "^5.4.14"
   },
   "dependencies": {
     "@junobuild/core": "^0.0.61",
