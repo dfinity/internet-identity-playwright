@@ -125,7 +125,6 @@ export class InternetIdentityPage {
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return parseInt(identity!);
   };
 
