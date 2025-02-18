@@ -53,7 +53,7 @@ export class InternetIdentityPage {
       try {
         const response = await this.page.goto(url, {waitUntil: 'domcontentloaded'});
         return response?.ok() ?? false;
-      } catch (e: unknown) {
+      } catch (_e: unknown) {
         return false;
       }
     };
