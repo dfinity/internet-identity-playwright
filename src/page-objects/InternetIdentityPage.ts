@@ -53,7 +53,7 @@ export class InternetIdentityPage {
       try {
         const response = await this.page.goto(url, {waitUntil: 'domcontentloaded'});
         return response?.ok() ?? false;
-      } catch (e: unknown) {
+      } catch (_e: unknown) {
         return false;
       }
     };
@@ -125,7 +125,6 @@ export class InternetIdentityPage {
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return parseInt(identity!);
   };
 
