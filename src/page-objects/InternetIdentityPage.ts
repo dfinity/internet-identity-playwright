@@ -150,12 +150,12 @@ export class InternetIdentityPage {
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     const identityLocator = iiPage.locator(`[data-anchor-id='${identity}']`);
-    if (await identityLocator.count() > 0) {
+    if (await identityLocator.count() === 1) {
       await iiPage.locator(`[data-anchor-id='${identity}']`).click();
     } else {
-      await iiPage.locator(selector ?? '[data-role="more-options"]').click();
+      await iiPage.locator('[data-role="more-options"]').click();
       await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
-      await iiPage.locator(selector ?? '[data-action="continue"]').click();
+      await iiPage.locator('[data-action="continue"]').click();
     }
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
