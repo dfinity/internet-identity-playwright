@@ -149,30 +149,15 @@ export class InternetIdentityPage {
     const iiPage = await iiPagePromise;
     await expect(iiPage).toHaveTitle('Internet Identity');
 
-    await iiPage.locator(`[data-anchor-id='${identity}']`).click();
-    await iiPage.waitForEvent('close');
-    expect(iiPage.isClosed()).toBe(true);
-  };
-  manuallySignInWithIdentity = async ({
-    selector,
-    identity
-  }: {
-    selector?: string;
-    identity: number;
-  }): Promise<void> => {
-    const iiPagePromise = this.context.waitForEvent('page');
-
-    await this.page.locator(selector ?? '[data-tid=login-button]').click();
-
-    const iiPage = await iiPagePromise;
-    await expect(iiPage).toHaveTitle('Internet Identity');
-
-    await iiPage.locator(selector ?? '[data-role="more-options"]').click();
-    await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
-    await iiPage.locator(selector ?? '[data-action="continue"]').click();
+    const identityLocator = iiPage.locator(`[data-anchor-id='${identity}']`);
+    if (await identityLocator.count() > 0) {
+      await iiPage.locator(`[data-anchor-id='${identity}']`).click();
+    } else {
+      await iiPage.locator(selector ?? '[data-role="more-options"]').click();
+      await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
+      await iiPage.locator(selector ?? '[data-action="continue"]').click();
+    }
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
   };
 }
-
-
