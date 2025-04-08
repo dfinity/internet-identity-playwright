@@ -149,13 +149,85 @@ export class InternetIdentityPage {
     const iiPage = await iiPagePromise;
     await expect(iiPage).toHaveTitle('Internet Identity');
 
-    const identityLocator = iiPage.locator(`[data-anchor-id='${identity}']`);
-    if (await identityLocator.count() === 1) {
-      await iiPage.locator(`[data-anchor-id='${identity}']`).click();
-    } else {
-      await iiPage.locator('[data-role="more-options"]').click();
+    await iiPage.locator(`[data-anchor-id='${identity}']`).click();
+    await iiPage.waitForEvent('close');
+    expect(iiPage.isClosed()).toBe(true);
+  };
+
+  createNewIdentity = async (params?: {
+    selector?: string;
+    captcha?: boolean;
+  }): Promise<number> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(params?.selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    await iiPage.locator('#registerButton').click();
+    await iiPage.locator('[data-action=construct-identity]').click();
+
+    if (params?.captcha === true) {
+      await iiPage.locator('input#captchaInput').fill('a', {timeout: 10000});
+      await iiPage.locator('#confirmRegisterButton').click();
+    }
+
+    const identityText = await iiPage.locator('#userNumber').textContent();
+    console.log('Identity text:', identityText);
+    const createdIdentity = parseInt(identityText!);
+    expect(createdIdentity).not.toBeNull();
+    return createdIdentity;
+  }
+
+  manuallySignInWithIdentity = async ({
+    selector,
+    identity
+  }: {
+    selector?: string;
+    identity: number;
+  }): Promise<void> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    const identityLocator = iiPage.locator(`[data-anchor-id="${identity}"]`);
+    const firstTimeLocator = iiPage.locator('#loginButton');
+    const fallbackLocator = iiPage.locator('[data-role="more-options"]');
+
+    const waitOptions: { state: 'visible'; timeout: number } = { state: 'visible', timeout: 30000 };
+
+    const identityPromise = identityLocator.waitFor(waitOptions)
+      .then(() => 'identity' as const)
+      .catch(() => 'none' as const);
+    const firstTimePromise = firstTimeLocator.waitFor(waitOptions)
+      .then(() => 'firsttime' as const)
+      .catch(() => 'none' as const);
+    const fallbackPromise = fallbackLocator.waitFor(waitOptions)
+      .then(() => 'fallback' as const)
+      .catch(() => 'none' as const);
+
+      const result: 'identity' | 'firsttime' | 'fallback' | 'none' = await Promise.race([
+        identityPromise,
+        fallbackPromise,
+        firstTimePromise,
+      ]);
+
+    if (result === 'identity') {
+      await identityLocator.first().click({ force: true});
+    } else if (result === 'firsttime') {
+      await firstTimeLocator.click({ force: true });
       await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
       await iiPage.locator('[data-action="continue"]').click();
+    } else if (result === 'fallback') {
+      await fallbackLocator.click({ force: true });
+      await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
+      await iiPage.locator('[data-action="continue"]').click();
+    } else {
+      throw new Error('No locator found for identity, first time, or fallback');
     }
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
