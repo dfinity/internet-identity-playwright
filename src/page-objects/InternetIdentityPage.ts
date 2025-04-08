@@ -174,7 +174,6 @@ export class InternetIdentityPage {
     }
 
     const identityText = await iiPage.locator('#userNumber').textContent();
-    console.log('Identity text:', identityText);
     const createdIdentity = parseInt(identityText!);
     expect(createdIdentity).not.toBeNull();
     return createdIdentity;
