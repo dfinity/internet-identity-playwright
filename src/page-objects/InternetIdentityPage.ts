@@ -194,20 +194,22 @@ export class InternetIdentityPage {
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     const identityLocator = iiPage.locator(`[data-anchor-id="${identity}"]`);
-    const firstTimeLocator = iiPage.locator('#loginButton');
+    const initialLoginLocator = iiPage.locator('#loginButton');
     const fallbackLocator = iiPage.locator('[data-role="more-options"]');
 
-    const waitOptions: { state: 'visible'; timeout: number } = { state: 'visible', timeout: 30000 };
+    const waitOptions: { state: 'visible'; timeout: number } = { state: 'visible', timeout: 10000 };
+
+    type RaceResult = 'identity' | 'firsttime' | 'fallback' | 'none';
 
     const identityPromise = identityLocator.waitFor(waitOptions)
-      .then(() => 'identity' as const)
-      .catch(() => 'none' as const);
-    const firstTimePromise = firstTimeLocator.waitFor(waitOptions)
-      .then(() => 'firsttime' as const)
-      .catch(() => 'none' as const);
+      .then(() => 'identity' as RaceResult)
+      .catch(() => 'none' as RaceResult);
+    const firstTimePromise = initialLoginLocator.waitFor(waitOptions)
+      .then(() => 'firsttime' as RaceResult)
+      .catch(() => 'none' as RaceResult);
     const fallbackPromise = fallbackLocator.waitFor(waitOptions)
-      .then(() => 'fallback' as const)
-      .catch(() => 'none' as const);
+      .then(() => 'fallback' as RaceResult)
+      .catch(() => 'none' as RaceResult);
 
       const result: 'identity' | 'firsttime' | 'fallback' | 'none' = await Promise.race([
         identityPromise,
@@ -218,7 +220,7 @@ export class InternetIdentityPage {
     if (result === 'identity') {
       await identityLocator.first().click({ force: true});
     } else if (result === 'firsttime') {
-      await firstTimeLocator.click({ force: true });
+      await initialLoginLocator.click({ force: true });
       await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
       await iiPage.locator('[data-action="continue"]').click();
     } else if (result === 'fallback') {

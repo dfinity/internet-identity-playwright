@@ -47,15 +47,15 @@ testWithII.describe('with selector', () => {
   });
 });
 
-testWithII.describe.serial('Identity sign in tests', () => {
+testWithII.describe.serial('create identity and manual sign-in', () => {
   let createdIdentity: number;
 
-  testWithII('Create Identity and capture it', async ({page, iiPage}) => {
+  testWithII('create identity and capture it', async ({page, iiPage}) => {
     await page.goto('/');
     createdIdentity = await iiPage.createNewIdentity();
   });
 
-  testWithII('Sign in using identity from list or fallback manually', async ({page, iiPage}) => {
+  testWithII('sign in using identity from list or fallback manually', async ({page, iiPage}) => {
     await page.goto('/');
     await iiPage.manuallySignInWithIdentity({identity: createdIdentity});
     await page.locator(logoutSelector).click();
