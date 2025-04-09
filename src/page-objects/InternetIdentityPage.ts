@@ -193,42 +193,54 @@ export class InternetIdentityPage {
     const iiPage = await iiPagePromise;
     await expect(iiPage).toHaveTitle('Internet Identity');
 
-    const identityLocator = iiPage.locator(`[data-anchor-id="${identity}"]`);
-    const initialLoginLocator = iiPage.locator('#loginButton');
-    const fallbackLocator = iiPage.locator('[data-role="more-options"]');
+    const existingIdentityLoginLocator = iiPage.locator(`[data-anchor-id="${identity}"]`);
+    const firstRunManualLoginLocator = iiPage.locator('#loginButton');
+    const moreOptionsLoginLocator = iiPage.locator('[data-role="more-options"]');
 
     const waitOptions: { state: 'visible'; timeout: number } = { state: 'visible', timeout: 10000 };
 
-    type RaceResult = 'identity' | 'firsttime' | 'fallback' | 'none';
+    type RaceResult = 'existingIdentityLogin' | 'firstRunManualLogin' | 'moreOptionsLogin' | 'none';
 
-    const identityPromise = identityLocator.waitFor(waitOptions)
-      .then(() => 'identity' as RaceResult)
-      .catch(() => 'none' as RaceResult);
-    const firstTimePromise = initialLoginLocator.waitFor(waitOptions)
-      .then(() => 'firsttime' as RaceResult)
-      .catch(() => 'none' as RaceResult);
-    const fallbackPromise = fallbackLocator.waitFor(waitOptions)
-      .then(() => 'fallback' as RaceResult)
-      .catch(() => 'none' as RaceResult);
+    async function getRaceResult(
+      locator: { waitFor: (options: any) => Promise<any> },
+      successResult: RaceResult
+    ): Promise<RaceResult> {
+      try {
+        await locator.waitFor(waitOptions);
+        return successResult;
+      } catch {
+        return 'none';
+      }
+    }
 
-      const result: 'identity' | 'firsttime' | 'fallback' | 'none' = await Promise.race([
-        identityPromise,
-        fallbackPromise,
-        firstTimePromise,
-      ]);
+    const identityPromise = getRaceResult(existingIdentityLoginLocator, 'existingIdentityLogin');
+    const firstTimePromise = getRaceResult(firstRunManualLoginLocator, 'firstRunManualLogin');
+    const fallbackPromise = getRaceResult(moreOptionsLoginLocator, 'moreOptionsLogin');
 
-    if (result === 'identity') {
-      await identityLocator.first().click({ force: true});
-    } else if (result === 'firsttime') {
-      await initialLoginLocator.click({ force: true });
-      await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
-      await iiPage.locator('[data-action="continue"]').click();
-    } else if (result === 'fallback') {
-      await fallbackLocator.click({ force: true });
-      await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
-      await iiPage.locator('[data-action="continue"]').click();
-    } else {
-      throw new Error('No locator found for identity, first time, or fallback');
+    const result: RaceResult = await Promise.race([
+      identityPromise,
+      fallbackPromise,
+      firstTimePromise,
+    ]);
+
+    switch(result) {
+      case 'existingIdentityLogin':
+        await existingIdentityLoginLocator.first().click({ force: true });
+        break;
+
+      case 'firstRunManualLogin':
+      case 'moreOptionsLogin': {
+        const locator =
+          result === 'firstRunManualLogin' ? firstRunManualLoginLocator : moreOptionsLoginLocator;
+        await locator.click({ force: true });
+        await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
+        await iiPage.locator('[data-action="continue"]').click();
+        break;
+      }
+      default:
+        throw new Error(
+          'No locator found for Buttons: existingIdentity, firstRunManualLogin or moreOptionsLogin'
+        );
     }
     await iiPage.waitForEvent('close');
     expect(iiPage.isClosed()).toBe(true);
