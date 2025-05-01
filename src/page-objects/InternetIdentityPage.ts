@@ -83,11 +83,13 @@ export class InternetIdentityPage {
     };
 
     const status = await waitInternetIdentityReady({count: timeout / retryInMilliseconds});
+
     expect(status).toEqual('ready');
 
     await expect(this.page).toHaveTitle('Internet Identity');
 
     const registerButton = this.page.locator('#registerButton');
+
     expect(registerButton).not.toBeNull();
   };
 
@@ -108,6 +110,7 @@ export class InternetIdentityPage {
     await this.page.locator(params?.selector ?? '[data-tid=login-button]').click();
 
     const iiPage = await iiPagePromise;
+
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     await iiPage.locator('#registerButton').click();
@@ -119,10 +122,12 @@ export class InternetIdentityPage {
     }
 
     const identity = await iiPage.locator('#userNumber').textContent();
+
     expect(identity).not.toBeNull();
 
     await iiPage.locator('#displayUserContinue').click();
     await iiPage.waitForEvent('close');
+
     expect(iiPage.isClosed()).toBe(true);
 
     return parseInt(identity!);
@@ -147,10 +152,12 @@ export class InternetIdentityPage {
     await this.page.locator(selector ?? '[data-tid=login-button]').click();
 
     const iiPage = await iiPagePromise;
+
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     await iiPage.locator(`[data-anchor-id='${identity}']`).click();
     await iiPage.waitForEvent('close');
+
     expect(iiPage.isClosed()).toBe(true);
   };
 }
