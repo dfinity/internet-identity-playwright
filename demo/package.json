@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "@junobuild/core": "^0.1.7",
-    "nanoid": "^5.1.0"
+    "nanoid": "^5.1.5"
   }
 }
