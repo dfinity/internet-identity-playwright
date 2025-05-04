@@ -160,4 +160,96 @@ export class InternetIdentityPage {
 
     expect(iiPage.isClosed()).toBe(true);
   };
+
+  createNewIdentity = async (params?: {
+    selector?: string;
+    captcha?: boolean;
+  }): Promise<number> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(params?.selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    await iiPage.locator('#registerButton').click();
+    await iiPage.locator('[data-action=construct-identity]').click();
+
+    if (params?.captcha === true) {
+      await iiPage.locator('input#captchaInput').fill('a', {timeout: 10000});
+      await iiPage.locator('#confirmRegisterButton').click();
+    }
+
+    const identityText = await iiPage.locator('#userNumber').textContent();
+    const createdIdentity = parseInt(identityText!);
+    expect(createdIdentity).not.toBeNull();
+    return createdIdentity;
+  }
+
+  manuallySignInWithIdentity = async ({
+    selector,
+    identity
+  }: {
+    selector?: string;
+    identity: number;
+  }): Promise<void> => {
+    const iiPagePromise = this.context.waitForEvent('page');
+
+    await this.page.locator(selector ?? '[data-tid=login-button]').click();
+
+    const iiPage = await iiPagePromise;
+    await expect(iiPage).toHaveTitle('Internet Identity');
+
+    const existingIdentityLoginLocator = iiPage.locator(`[data-anchor-id="${identity}"]`);
+    const firstRunManualLoginLocator = iiPage.locator('#loginButton');
+    const moreOptionsLoginLocator = iiPage.locator('[data-role="more-options"]');
+
+    const waitOptions: { state: 'visible'; timeout: number } = { state: 'visible', timeout: 10000 };
+
+    type RaceResult = 'existingIdentityLogin' | 'firstRunManualLogin' | 'moreOptionsLogin' | 'none';
+
+    async function getRaceResult(
+      locator: { waitFor: (options: any) => Promise<any> },
+      successResult: RaceResult
+    ): Promise<RaceResult> {
+      try {
+        await locator.waitFor(waitOptions);
+        return successResult;
+      } catch {
+        return 'none';
+      }
+    }
+
+    const identityPromise = getRaceResult(existingIdentityLoginLocator, 'existingIdentityLogin');
+    const firstTimePromise = getRaceResult(firstRunManualLoginLocator, 'firstRunManualLogin');
+    const fallbackPromise = getRaceResult(moreOptionsLoginLocator, 'moreOptionsLogin');
+
+    const result: RaceResult = await Promise.race([
+      identityPromise,
+      fallbackPromise,
+      firstTimePromise,
+    ]);
+
+    switch(result) {
+      case 'existingIdentityLogin':
+        await existingIdentityLoginLocator.first().click({ force: true });
+        break;
+
+      case 'firstRunManualLogin':
+      case 'moreOptionsLogin': {
+        const locator =
+          result === 'firstRunManualLogin' ? firstRunManualLoginLocator : moreOptionsLoginLocator;
+        await locator.click({ force: true });
+        await iiPage.fill('input[data-role="anchor-input"]', identity.toString());
+        await iiPage.locator('[data-action="continue"]').click();
+        break;
+      }
+      default:
+        throw new Error(
+          'No locator found for Buttons: existingIdentity, firstRunManualLogin or moreOptionsLogin'
+        );
+    }
+    await iiPage.waitForEvent('close');
+    expect(iiPage.isClosed()).toBe(true);
+  };
 }
