@@ -44,7 +44,7 @@
     "format:check": "prettier --check .",
     "ts-declaration": "tsc --emitDeclarationOnly --outDir dist/types",
     "build": "tsc --noEmit && node rmdir.mjs && node esbuild.mjs && npm run ts-declaration",
-    "lint": "eslint --max-warnings 0 \"src/**/*\"",
+    "lint": "eslint --max-warnings 0",
     "dev": "npm --prefix demo run dev",
     "e2e": "NODE_ENV=development playwright test e2e/login.spec",
     "e2e:ci": "playwright test --reporter=html e2e/login.spec",
