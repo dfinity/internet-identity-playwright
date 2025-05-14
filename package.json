@@ -63,6 +63,6 @@
     "node": ">=22"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.44.1"
+    "@playwright/test": "^1"
   }
 }
