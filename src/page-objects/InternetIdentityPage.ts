@@ -99,11 +99,13 @@ export class InternetIdentityPage {
    * @param {Object} [params] - The optional arguments for the sign-in method.
    * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
    * @param {boolean} [params.captcha] - Set to true if the II login flow requires a captcha.
+   * @param {boolean} [params.createPasskey] - Set to true if the II login flow requires the user to create a passkey.
    * @returns {Promise<number>} A promise that resolves to the new identity number.
    */
   signInWithNewIdentity = async (params?: {
     selector?: string;
     captcha?: boolean;
+    createPasskey?: boolean;
   }): Promise<number> => {
     const iiPagePromise = this.context.waitForEvent('page');
 
@@ -114,7 +116,10 @@ export class InternetIdentityPage {
     await expect(iiPage).toHaveTitle('Internet Identity');
 
     await iiPage.locator('#registerButton').click();
-    await iiPage.locator('[data-action=construct-identity]').click();
+
+    if (params?.createPasskey === true) {
+      await iiPage.locator('[data-action=construct-identity]').click();
+    }
 
     if (params?.captcha === true) {
       await iiPage.locator('input#captchaInput').fill('a', {timeout: 10000});
