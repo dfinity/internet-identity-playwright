@@ -1,10 +1,8 @@
 import {testWithII} from '../src';
+import {DOCKER_CONTAINER} from './spec.constants';
 
-testWithII.beforeEach(async ({iiPage}) => {
-  const DOCKER_CONTAINER_URL = 'http://127.0.0.1:5987';
-  const DOCKER_INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
-
-  await iiPage.waitReady({url: DOCKER_CONTAINER_URL, canisterId: DOCKER_INTERNET_IDENTITY_ID});
+testWithII.beforeEach(async ({iiPage, browser}) => {
+  await iiPage.waitReady(DOCKER_CONTAINER);
 });
 
 testWithII('should sign-in with a new user when II requires a captcha', async ({page, iiPage}) => {
