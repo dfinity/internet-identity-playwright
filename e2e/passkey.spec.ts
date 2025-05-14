@@ -5,8 +5,8 @@ testWithII.beforeEach(async ({iiPage}) => {
   await iiPage.waitReady(DOCKER_CONTAINER);
 });
 
-testWithII('should sign-in with a new user when II requires a captcha', async ({page, iiPage}) => {
+testWithII('should sign-in with a new user when II requires a passkey', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithNewIdentity({captcha: true, createPasskey: true});
+  await iiPage.signInWithNewIdentity({createPasskey: true});
 });
