@@ -4,7 +4,7 @@ import {DOCKER_CONTAINER} from './spec.constants';
 const loginSelector = '#login';
 const logoutSelector = '#logout';
 
-testWithII.beforeEach(async ({iiPage, browser}) => {
+testWithII.beforeEach(async ({iiPage}) => {
   await iiPage.waitReady(DOCKER_CONTAINER);
 });
 

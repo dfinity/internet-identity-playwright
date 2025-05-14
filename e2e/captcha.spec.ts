@@ -1,7 +1,7 @@
 import {testWithII} from '../src';
 import {DOCKER_CONTAINER} from './spec.constants';
 
-testWithII.beforeEach(async ({iiPage, browser}) => {
+testWithII.beforeEach(async ({iiPage}) => {
   await iiPage.waitReady(DOCKER_CONTAINER);
 });
 
