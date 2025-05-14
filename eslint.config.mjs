@@ -5,6 +5,6 @@ export default [
   ...config,
   ...vitestConfig,
   {
-    ignores: ['**/dist']
+    ignores: ['**/dist', 'eslint-local-rules.cjs', 'demo']
   }
 ];

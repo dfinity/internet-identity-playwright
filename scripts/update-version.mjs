@@ -25,6 +25,7 @@ const updateVersion = async () => {
   const packagePath = join(process.cwd(), 'package.json');
 
   if (!existsSync(packagePath)) {
+    // eslint-disable-next-line no-console
     console.log(`Target ${packagePath} does not exist.`);
     return;
   }
