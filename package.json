@@ -46,10 +46,12 @@
     "build": "tsc --noEmit && node rmdir.mjs && node esbuild.mjs && npm run ts-declaration",
     "lint": "eslint --max-warnings 0",
     "dev": "npm --prefix demo run dev",
-    "e2e": "NODE_ENV=development playwright test --grep-invert 'captcha'",
-    "e2e:ci": "playwright test --reporter=html --grep-invert 'captcha'",
+    "e2e": "NODE_ENV=development playwright test e2e/login.spec",
+    "e2e:ci": "playwright test --reporter=html e2e/login.spec",
     "e2e:captcha": "NODE_ENV=development playwright test e2e/captcha.spec",
-    "e2e:captcha:ci": "playwright test --reporter=html e2e/captcha.spec"
+    "e2e:captcha:ci": "playwright test --reporter=html e2e/captcha.spec",
+    "e2e:passkey": "NODE_ENV=development playwright test e2e/passkey.spec",
+    "e2e:passkey:ci": "playwright test --reporter=html e2e/passkey.spec"
   },
   "devDependencies": {
     "@dfinity/eslint-config-oisy-wallet": "^0.1.10",

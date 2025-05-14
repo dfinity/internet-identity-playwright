@@ -84,6 +84,16 @@ testWithII('should sign-in with a new user when II requires a captcha', async ({
 });
 ```
 
+Similarly, you can test a flow where Internet Identity requires the user to create and save a passkey:
+
+```javascript
+testWithII('should sign in with a new user when II requires a passkey', async ({page, iiPage}) => {
+  await page.goto('/');
+
+  await iiPage.signInWithNewIdentity({createPasskey: true});
+});
+```
+
 ### 3. Wait for Internet Identity (optional)
 
 You might encounter scenarios where you perform tests against a local replica started in parallel with your tests, commonly when automating the tests in a CI environment. The library also exposes a fixture that lets you wait for Internet Identity to be ready.
@@ -165,6 +175,20 @@ Then, navigate to the root directory and run the dedicated test:
 
 ```bash
 npm run e2e:captcha
+```
+
+### Running Required Passkey Tests Locally
+
+The default test suite validates the use of the latest Internet Identity, which does not require the user to complete a specific step to create a passkey. To test a flow where passkey creation is required, run the following command from the `demo` directory:
+
+```bash
+docker compose -f docker-compose.passkey.yml up
+```
+
+Then, navigate to the root directory and run the dedicated test:
+
+```bash
+npm run e2e:passkey
 ```
 
 ## 🚧 Limitations
