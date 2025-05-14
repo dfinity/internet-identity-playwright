@@ -3,7 +3,7 @@ import {testWithII} from '../src';
 const loginSelector = '#login';
 const logoutSelector = '#logout';
 
-testWithII.beforeEach(async ({iiPage, browser}) => {
+testWithII.beforeEach(async ({iiPage}) => {
   const DOCKER_CONTAINER_URL = 'http://127.0.0.1:5987';
   const DOCKER_INTERNET_IDENTITY_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 
