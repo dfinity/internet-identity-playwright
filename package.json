@@ -54,7 +54,7 @@
     "e2e:passkey:ci": "playwright test --reporter=html e2e/passkey.spec"
   },
   "devDependencies": {
-    "@dfinity/eslint-config-oisy-wallet": "^0.1.10",
+    "@dfinity/eslint-config-oisy-wallet": "^0.1.13",
     "@types/node": "^22.15.18",
     "esbuild": "^0.25.4",
     "prettier": "^3.5.3",
