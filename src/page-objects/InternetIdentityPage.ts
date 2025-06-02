@@ -128,14 +128,20 @@ export class InternetIdentityPage {
 
     const identity = await iiPage.locator('#userNumber').textContent();
 
-    expect(identity).not.toBeNull();
+    const expectNotToBeNull: <T>(value: T | null) => asserts value is NonNullable<T> = <T>(
+      value: T
+    ) => {
+      expect(value).not.toBeNull();
+    };
+
+    expectNotToBeNull(identity);
 
     await iiPage.locator('#displayUserContinue').click();
     await iiPage.waitForEvent('close');
 
     expect(iiPage.isClosed()).toBe(true);
 
-    return parseInt(identity!);
+    return parseInt(identity);
   };
 
   /**
