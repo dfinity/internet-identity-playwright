@@ -56,9 +56,9 @@
   "devDependencies": {
     "@dfinity/eslint-config-oisy-wallet": "^0.2.2",
     "@types/node": "^22.15.29",
-    "esbuild": "^0.25.5",
-    "prettier": "^3.5.3",
-    "prettier-plugin-organize-imports": "^4.1.0",
+    "esbuild": "^0.25.8",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.2.0",
     "typescript": "^5.8.3"
   },
   "engines": {
