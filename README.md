@@ -137,25 +137,48 @@ You can find an example test in the following file: [login.spec.ts](./e2e/login.
 
 ### Running Tests Locally
 
-To run these tests locally, you'll need to install the Juno CLI. Follow the steps below:
+To run these tests locally, follow the steps below:
 
-1. Install Docker:
+1. Install a container runtime:
 
-Make sure you have Docker installed on your machine ([Windows](https://docs.docker.com/desktop/install/windows-install/), [MacOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)).
+Make sure you have an up-to-date container runtime installed on your machine, such as [Docker](https://www.docker.com/) or [Podman](https://podman.io/).
 
-> [!NOTE]
-> For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
+The suite uses Docker by default. If you're using Podman instead, update the emulator config in [demo/juno.config.mjs](./demo/juno.config.mjs):
 
-2. Start the Demo Application:
+```
+emulator: {
+  runner: {
+    type: "podman"
+  },
+  satellite: {}
+}
+```
 
-Navigate to the [demo](./demo) directory and start the application using Docker:
+2. Install Juno's CLI:
+
+```
+npm i -g @junobuild/cli
+```
+
+3. Start the emulator:
+
+Navigate to the [demo](./demo) directory and start the environment:
 
 ```bash
 cd demo
-docker compose up
+juno dev start
 ```
 
-4. Run the Tests:
+4. Setup the environment:
+
+If this is the first time you're running the tests locally, you need to configure the backend of the demo application by authorizing your CLI to operate the demo's Satellite (canister) and applying its backend configuration:
+
+```bash
+juno login --emulator --mode development
+juno config --mode development
+```
+
+5. Run the Tests:
 
 Return to the root directory and execute the tests:
 
