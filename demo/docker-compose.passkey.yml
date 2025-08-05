@@ -5,7 +5,7 @@ services:
       - 5987:5987
     volumes:
       - juno_satellite_passkey:/juno/.juno
-      - ./juno.dev.config.js:/juno/juno.dev.config.js
+      - ./juno.dev.config.json:/juno/juno.dev.config.json
       - ./target/deploy:/juno/target/deploy/
 
 volumes:

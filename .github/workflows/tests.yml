@@ -16,6 +16,8 @@ jobs:
       - name: Install demo dependencies
         run: npm ci
         working-directory: demo
+      - name: Install Juno CLI
+        run: npm i -g @junobuild/cli
       - name: Cache Docker layers for default image
         uses: actions/cache@v3
         with:
@@ -23,12 +25,16 @@ jobs:
           key: ${{ runner.os }}-docker-default-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-docker-default-
-      - name: Run default tests
+      - name: Run emulator
         run: |
           cd demo
-          docker compose up -d
-          cd ..
-          npm run e2e:ci
+          set -e
+          juno dev start --headless &
+          juno dev wait
+          juno login --emulator --mode development --headless
+          juno config --mode development --headless
+      - name: Run default tests
+        run: npm run e2e:ci
 
   tests_captcha:
     runs-on: ubuntu-latest
