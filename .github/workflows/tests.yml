@@ -34,9 +34,7 @@ jobs:
           juno login --emulator --mode development --headless
           juno config --mode development --headless
       - name: Run default tests
-        run: |
-          cd ..
-          npm run e2e:ci
+        run: npm run e2e:ci
 
   tests_captcha:
     runs-on: ubuntu-latest
