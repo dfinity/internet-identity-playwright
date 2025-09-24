@@ -2,10 +2,16 @@ import {signIn} from '@junobuild/core';
 import {addEventClick} from '../utils/utils';
 
 export const renderLogin = (app) => {
+  const signInWithII = async () => {
+    await signIn({
+      internet_identity: {}
+    });
+  };
+
   addEventClick({
     target: app,
     selector: '#login',
-    fn: signIn
+    fn: signInWithII
   });
 
   app.innerHTML = `<button id="login" data-tid="login-button"
