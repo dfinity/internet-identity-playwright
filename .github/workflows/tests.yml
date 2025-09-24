@@ -29,10 +29,10 @@ jobs:
         run: |
           cd demo
           set -e
-          juno dev start --headless &
-          juno dev wait
+          juno emulator start --headless &
+          juno emulator wait
           juno login --emulator --mode development --headless
-          juno config --mode development --headless
+          juno config apply --mode development --headless
       - name: Run default tests
         run: npm run e2e:ci
 

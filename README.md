@@ -166,7 +166,7 @@ Navigate to the [demo](./demo) directory and start the environment:
 
 ```bash
 cd demo
-juno dev start
+juno emulator start
 ```
 
 4. Setup the environment:
@@ -175,7 +175,7 @@ If this is the first time you're running the tests locally, you need to configur
 
 ```bash
 juno login --emulator --mode development
-juno config --mode development
+juno config apply --mode development
 ```
 
 5. Run the Tests:
