@@ -12,17 +12,17 @@
     "postinstall": "npm run postinstall:copy-auth"
   },
   "devDependencies": {
-    "@junobuild/config": "^2.4.3",
+    "@junobuild/config": "^2.5.0",
     "@junobuild/vite-plugin": "^4.3.0",
-    "@tailwindcss/vite": "^4.1.14",
+    "@tailwindcss/vite": "^4.1.16",
     "autoprefixer": "^10.4.21",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.14",
-    "vite": "^7.1.9",
+    "tailwindcss": "^4.1.16",
+    "vite": "^7.1.12",
     "vite-plugin-node-polyfills": "^0.24.0"
   },
   "dependencies": {
-    "@junobuild/core": "^2.2.0",
+    "@junobuild/core": "^2.2.1",
     "nanoid": "^5.1.6"
   }
 }
