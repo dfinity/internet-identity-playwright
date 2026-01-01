@@ -15,7 +15,7 @@
     "@junobuild/config": "^2.7.0",
     "@junobuild/vite-plugin": "^4.3.0",
     "@tailwindcss/vite": "^4.1.14",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.23",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.17",
     "vite": "^7.2.6",
