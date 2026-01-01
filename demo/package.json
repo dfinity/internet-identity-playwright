@@ -14,7 +14,7 @@
   "devDependencies": {
     "@junobuild/config": "^2.7.0",
     "@junobuild/vite-plugin": "^4.3.0",
-    "@tailwindcss/vite": "^4.1.14",
+    "@tailwindcss/vite": "^4.1.18",
     "autoprefixer": "^10.4.21",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.17",
