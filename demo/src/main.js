@@ -22,11 +22,7 @@ authSubscribe((user) => {
  * @returns {Promise<void>}
  */
 const onAppInit = async () => {
-  await initSatellite({
-    workers: {
-      auth: true
-    }
-  });
+  await initSatellite();
 };
 
 document.addEventListener('DOMContentLoaded', onAppInit, {once: true});
