@@ -43,16 +43,16 @@ import {testWithII} from '@dfinity/internet-identity-playwright';
 Use the extended fixtures in your tests to perform authentication flows.
 
 ```javascript
-testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+testWithII('should sign-in with a first-time user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithNewIdentity();
+  await iiPage.signInWithFirstPasskey();
 });
 
-testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
+testWithII('should sign-in with an existing user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithIdentity({identity: 10003});
+  await iiPage.signInWithExistingPasskey();
 });
 ```
 
@@ -61,36 +61,16 @@ The `iiPage` object represents the page of your application that contains the ca
 ```javascript
 const loginSelector = '#login';
 
-testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+testWithII('should sign-in with a first-time user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithNewIdentity({selector: loginSelector});
+  await iiPage.signInWithFirstPasskey({selector: loginSelector});
 });
 
-testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
+testWithII('should sign-in with an existing user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithIdentity({identity: 10003, selector: loginSelector});
-});
-```
-
-The plugin defaults to an Internet Identity sign-in flow that does not require captcha. If you wish to set up a test that requires this validation, you can pass the option `captcha` set to `true` when initializing a new user:
-
-```javascript
-testWithII('should sign-in with a new user when II requires a captcha', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithNewIdentity({captcha: true});
-});
-```
-
-Similarly, you can test a flow where Internet Identity requires the user to create and save a passkey:
-
-```javascript
-testWithII('should sign in with a new user when II requires a passkey', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithNewIdentity({createPasskey: true});
+  await iiPage.signInWithExistingPasskey({selector: loginSelector});
 });
 ```
 

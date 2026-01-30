@@ -9,13 +9,13 @@ testWithII.beforeEach(async ({iiPage}) => {
 });
 
 testWithII.describe('without selector', () => {
-  testWithII('should sign-in with a first user', async ({page, iiPage}) => {
+  testWithII('should sign-in with a first-time user', async ({page, iiPage}) => {
     await page.goto('/');
 
     await iiPage.signInWithFirstPasskey();
   });
 
-  testWithII('should sign-in with existing user', async ({page, iiPage}) => {
+  testWithII('should sign-in with an existing user', async ({page, iiPage}) => {
     await page.goto('/');
 
     await iiPage.signInWithFirstPasskey();
@@ -27,13 +27,13 @@ testWithII.describe('without selector', () => {
 });
 
 testWithII.describe('with selector', () => {
-  testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+  testWithII('should sign-in with a first-time user', async ({page, iiPage}) => {
     await page.goto('/');
 
     await iiPage.signInWithFirstPasskey({selector: loginSelector});
   });
 
-  testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
+  testWithII('should sign-in with an existing user', async ({page, iiPage}) => {
     await page.goto('/');
 
     await iiPage.signInWithFirstPasskey({selector: loginSelector});
