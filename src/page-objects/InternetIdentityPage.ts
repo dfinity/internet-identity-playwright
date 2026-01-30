@@ -93,55 +93,99 @@ export class InternetIdentityPage {
   };
 
   /**
+   * Signs in with Internet Identity using passkey authentication by default.
+   *
+   * Note: the function automatically detects whether this is a first-time passkey flow or an existing passkey flow.
+   *
+   * @param {Object} [params] - The optional arguments for the sign-in method.
+   * @param {Object|null} [params.passkey] - Passkey authentication options. Defaults to null (no particular options).
+   * @param {string} [params.passkey.selector] - The selector for the login button in your application. Defaults to [data-tid=login-button].
+   * @returns {Promise<void>} A promise that resolves once the authentication flow is completed and the II page instance is closed.
+   */
+  signIn = async (
+    params: {
+      passkey: {
+        selector?: string;
+      } | null;
+    } = {passkey: null}
+  ) => {
+    const signInFlow = async ({iiPage}: {iiPage: Page}) => {
+      const continueWithFirstPasskey = 'Continue with passkey';
+      const continueWithExistingPasskey = 'Continue';
+
+      // The flows are different if it's the very first passkey - e.g. there is no browser cache - or
+      // if the passkey (default account) is being reused. That's why here we try to detect which flow
+      // should be executed. This way, we hide the complexity for the consumer of the plugin.
+      const mainBtn = iiPage
+        .locator(`button:has-text("${continueWithFirstPasskey}")`)
+        .or(iiPage.locator(`button:has-text("${continueWithExistingPasskey}")`));
+
+      await mainBtn.isVisible();
+
+      const isFirstPasskey = iiPage.locator(`button:has-text("${continueWithFirstPasskey}")`);
+
+      const fn = (await isFirstPasskey.isVisible())
+        ? this.#signInWithFirstPasskey
+        : this.#signInWithExistingPasskey;
+
+      await fn({iiPage});
+    };
+
+    await this.#executeSignIn({
+      selector: params?.passkey?.selector,
+      signInFlow
+    });
+  };
+
+  /**
    * Signs in a very first time with Internet Identity.
    *
    * @param {Object} [params] - The optional arguments for the sign-in method.
-   * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
+   * @param {Page} params.iiPage - The Internet Identity page instance.
    * @returns {Promise<void>} A promise that resolves once the authentication flow is completed.
+   * @private
    */
-  signInWithFirstPasskey = async (params?: {selector?: string}): Promise<void> => {
-    const signInFlow = async ({iiPage}: {iiPage: Page}) => {
-      const initWizardBtn = iiPage.locator('button:has-text("Continue with passkey")');
-      await initWizardBtn.waitFor({state: 'visible'});
-      await initWizardBtn.click();
+  #signInWithFirstPasskey = async ({iiPage}: {iiPage: Page}): Promise<void> => {
+    const initWizardBtn = iiPage.locator('button:has-text("Continue with passkey")');
+    await initWizardBtn.waitFor({state: 'visible'});
+    await initWizardBtn.click();
 
-      // "Use existing identity" actually seems to create an identity in test mode.
-      // The option "Create new identity" adds a step in the flow to provide a name for the passkey
-      // which seems ignored anyway as the resulting first identity is named by default "My account"
-      const createBtn = iiPage.locator('button:has-text("Use existing identity")');
-      await createBtn.waitFor({state: 'visible'});
-      await createBtn.click();
+    // "Use existing identity" actually seems to create an identity in test mode.
+    // The option "Create new identity" adds a step in the flow to provide a name for the passkey
+    // which seems ignored anyway as the resulting first identity is named by default "My account"
+    const createBtn = iiPage.locator('button:has-text("Use existing identity")');
+    await createBtn.waitFor({state: 'visible'});
+    await createBtn.click();
 
-      const continueBtn = iiPage.locator('button:has-text("Continue")');
-      await continueBtn.waitFor({state: 'visible'});
-      await continueBtn.click();
-    };
-
-    await this.#signIn({
-      ...(params ?? {}),
-      signInFlow
-    });
+    const continueBtn = iiPage.locator('button:has-text("Continue")');
+    await continueBtn.waitFor({state: 'visible'});
+    await continueBtn.click();
   };
 
   /**
    * Signs again with Internet Identity by using the very first passkey that was created.
    *
    * @param {Object} [params] - The optional arguments for the sign-in method.
-   * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
+   * @param {Page} params.iiPage - The Internet Identity page instance.
    * @returns {Promise<void>} A promise that resolves once the authentication flow is completed.
+   * @private
    */
-  signInWithExistingPasskey = async (params?: {selector?: string}): Promise<void> => {
-    const signInFlow = async ({iiPage}: {iiPage: Page}) => {
-      await iiPage.locator('button:has-text("Continue")').click();
-    };
-
-    await this.#signIn({
-      ...(params ?? {}),
-      signInFlow
-    });
+  #signInWithExistingPasskey = async ({iiPage}: {iiPage: Page}): Promise<void> => {
+    await iiPage.locator('button:has-text("Continue")').click();
   };
 
-  async #signIn({
+  /**
+   * Executes the Internet Identity sign-in flow by coordinating between the application page
+   * and the Internet Identity popup/tab.
+   *
+   * @param {Object} params - The parameters for executing the sign-in flow.
+   * @param {string} [params.selector] - The selector for the login button in your application. Defaults to [data-tid=login-button].
+   * @param {Function} params.signInFlow - A callback function that executes the authentication steps on the Internet Identity page.
+   * @param {Page} params.signInFlow.iiPage - The Internet Identity page instance passed to the callback.
+   * @returns {Promise<void>} A promise that resolves once the complete authentication flow is finished and the Internet Identity page is closed.
+   * @private
+   */
+  async #executeSignIn({
     selector,
     signInFlow
   }: {
