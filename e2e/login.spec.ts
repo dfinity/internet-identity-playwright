@@ -9,20 +9,20 @@ testWithII.beforeEach(async ({iiPage}) => {
 });
 
 testWithII.describe('without selector', () => {
-  testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+  testWithII('should sign-in with a first user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    await iiPage.signInWithNewIdentity();
+    await iiPage.signInWithFirstPasskey();
   });
 
-  testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
+  testWithII('should sign-in with existing user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    const identity = await iiPage.signInWithNewIdentity();
+    await iiPage.signInWithFirstPasskey();
 
     await page.locator('#logout').click();
 
-    await iiPage.signInWithIdentity({identity});
+    await iiPage.signInWithExistingPasskey();
   });
 });
 
@@ -30,16 +30,16 @@ testWithII.describe('with selector', () => {
   testWithII('should sign-in with a new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    await iiPage.signInWithNewIdentity({selector: loginSelector});
+    await iiPage.signInWithFirstPasskey({selector: loginSelector});
   });
 
   testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
     await page.goto('/');
 
-    const identity = await iiPage.signInWithNewIdentity({selector: loginSelector});
+    await iiPage.signInWithFirstPasskey({selector: loginSelector});
 
     await page.locator(logoutSelector).click();
 
-    await iiPage.signInWithIdentity({identity, selector: loginSelector});
+    await iiPage.signInWithExistingPasskey({selector: loginSelector});
   });
 });

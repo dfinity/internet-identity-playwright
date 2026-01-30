@@ -88,87 +88,82 @@ export class InternetIdentityPage {
 
     await expect(this.page).toHaveTitle('Internet Identity');
 
-    const registerButton = this.page.locator('#registerButton');
-
-    expect(registerButton).not.toBeNull();
+    const mainSignInBtn = this.page.locator('button:has-text("Sign in")');
+    await mainSignInBtn.isVisible();
   };
 
   /**
-   * Signs in and create a new user.
+   * Signs in a very first time with Internet Identity.
    *
    * @param {Object} [params] - The optional arguments for the sign-in method.
    * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
-   * @param {boolean} [params.captcha] - Set to true if the II login flow requires a captcha.
-   * @param {boolean} [params.createPasskey] - Set to true if the II login flow requires the user to create a passkey.
-   * @returns {Promise<number>} A promise that resolves to the new identity number.
+   * @returns {Promise<void>} A promise that resolves once the authentication flow is completed.
    */
-  signInWithNewIdentity = async (params?: {
-    selector?: string;
-    captcha?: boolean;
-    createPasskey?: boolean;
-  }): Promise<number> => {
-    const iiPagePromise = this.context.waitForEvent('page');
+  signInWithFirstPasskey = async (params?: {selector?: string}): Promise<void> => {
+    const signInFlow = async ({iiPage}: {iiPage: Page}) => {
+      const initWizardBtn = iiPage.locator('button:has-text("Continue with passkey")');
+      await initWizardBtn.waitFor({state: 'visible'});
+      await initWizardBtn.click();
 
-    await this.page.locator(params?.selector ?? '[data-tid=login-button]').click();
+      // "Use existing identity" actually seems to create an identity in test mode.
+      // The option "Create new identity" adds a step in the flow to provide a name for the passkey
+      // which seems ignored anyway as the resulting first identity is named by default "My account"
+      const createBtn = iiPage.locator('button:has-text("Use existing identity")');
+      await createBtn.waitFor({state: 'visible'});
+      await createBtn.click();
 
-    const iiPage = await iiPagePromise;
-
-    await expect(iiPage).toHaveTitle('Internet Identity');
-
-    await iiPage.locator('#registerButton').click();
-
-    if (params?.createPasskey === true) {
-      await iiPage.locator('[data-action=construct-identity]').click();
-    }
-
-    if (params?.captcha === true) {
-      await iiPage.locator('input#captchaInput').fill('a', {timeout: 10000});
-      await iiPage.locator('#confirmRegisterButton').click();
-    }
-
-    const identity = await iiPage.locator('#userNumber').textContent();
-
-    const expectNotToBeNull: <T>(value: T | null) => asserts value is NonNullable<T> = <T>(
-      value: T
-    ) => {
-      expect(value).not.toBeNull();
+      const continueBtn = iiPage.locator('button:has-text("Continue")');
+      await continueBtn.waitFor({state: 'visible'});
+      await continueBtn.click();
     };
 
-    expectNotToBeNull(identity);
-
-    await iiPage.locator('#displayUserContinue').click();
-    await iiPage.waitForEvent('close');
-
-    expect(iiPage.isClosed()).toBe(true);
-
-    return parseInt(identity);
+    await this.#signIn({
+      ...(params ?? {}),
+      signInFlow
+    });
   };
 
   /**
-   * Signs in with an existing identity.
-   * @param {Object} params - The parameters for the sign-in method.
+   * Signs again with Internet Identity by using the very first passkey that was created.
+   *
+   * @param {Object} [params] - The optional arguments for the sign-in method.
    * @param {string} [params.selector] - The selector for the login button. Defaults to [data-tid=login-button].
-   * @param {number} params.identity - The identity number.
-   * @returns {Promise<void>} A promise that resolves when the sign-in process is complete.
+   * @returns {Promise<void>} A promise that resolves once the authentication flow is completed.
    */
-  signInWithIdentity = async ({
+  signInWithExistingPasskey = async (params?: {selector?: string}): Promise<void> => {
+    const signInFlow = async ({iiPage}: {iiPage: Page}) => {
+      await iiPage.locator('button:has-text("Continue")').click();
+    };
+
+    await this.#signIn({
+      ...(params ?? {}),
+      signInFlow
+    });
+  };
+
+  async #signIn({
     selector,
-    identity
+    signInFlow
   }: {
     selector?: string;
-    identity: number;
-  }): Promise<void> => {
+    signInFlow: (params: {iiPage: Page}) => Promise<void>;
+  }) {
+    // Init sign-in by clicking on the login button in the tested application
     const iiPagePromise = this.context.waitForEvent('page');
 
     await this.page.locator(selector ?? '[data-tid=login-button]').click();
 
+    // Wait for II
     const iiPage = await iiPagePromise;
 
     await expect(iiPage).toHaveTitle('Internet Identity');
 
-    await iiPage.locator(`[data-anchor-id='${identity}']`).click();
+    // Execute sign-in test flow
+    await signInFlow({iiPage});
+
+    // Await for completion and II being closed
     await iiPage.waitForEvent('close');
 
     expect(iiPage.isClosed()).toBe(true);
-  };
+  }
 }
