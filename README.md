@@ -42,55 +42,29 @@ import {testWithII} from '@dfinity/internet-identity-playwright';
 
 Use the extended fixtures in your tests to perform authentication flows.
 
+> [!NOTE]
+> The `signIn()` method automatically detects whether this is a first-time passkey flow or an existing passkey flow, handling the complexity for you.
+> When creating a new passkey for the first time, the identity name is set to "Test".
+
 ```javascript
-testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+testWithII('should sign-in with a user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithNewIdentity();
-});
-
-testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithIdentity({identity: 10003});
+  await iiPage.signIn();
 });
 ```
 
-The `iiPage` object represents the page of your application that contains the call to action to start the authentication flow with Internet Identity. By default, the fixture will search for a button identified by the attribute `[data-tid=login-button]`. You can customize this behavior by providing your own selector.
+The `iiPage` object represents the page of your application that contains the call to action to start the authentication flow with Internet Identity.
+
+By default, the fixture will search for a button identified by the attribute `[data-tid=login-button]`. You can customize this behavior by providing your own selector.
 
 ```javascript
 const loginSelector = '#login';
 
-testWithII('should sign-in with a new user', async ({page, iiPage}) => {
+testWithII('should sign-in with a user', async ({page, iiPage}) => {
   await page.goto('/');
 
-  await iiPage.signInWithNewIdentity({selector: loginSelector});
-});
-
-testWithII('should sign-in with an existing new user', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithIdentity({identity: 10003, selector: loginSelector});
-});
-```
-
-The plugin defaults to an Internet Identity sign-in flow that does not require captcha. If you wish to set up a test that requires this validation, you can pass the option `captcha` set to `true` when initializing a new user:
-
-```javascript
-testWithII('should sign-in with a new user when II requires a captcha', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithNewIdentity({captcha: true});
-});
-```
-
-Similarly, you can test a flow where Internet Identity requires the user to create and save a passkey:
-
-```javascript
-testWithII('should sign in with a new user when II requires a passkey', async ({page, iiPage}) => {
-  await page.goto('/');
-
-  await iiPage.signInWithNewIdentity({createPasskey: true});
+  await iiPage.signIn({passkey: {selector: loginSelector}});
 });
 ```
 
