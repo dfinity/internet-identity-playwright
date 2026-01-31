@@ -150,12 +150,15 @@ export class InternetIdentityPage {
     await initWizardBtn.waitFor({state: 'visible'});
     await initWizardBtn.click();
 
-    // "Use existing identity" actually seems to create an identity in test mode.
-    // The option "Create new identity" adds a step in the flow to provide a name for the passkey
-    // which seems ignored anyway as the resulting first identity is named by default "My account"
-    const createBtn = iiPage.locator('button:has-text("Use existing identity")');
+    const createBtn = iiPage.locator('button:has-text("Create new identity")');
     await createBtn.waitFor({state: 'visible'});
     await createBtn.click();
+
+    const nameInput = iiPage.locator('input[placeholder="Identity name"]');
+    await nameInput.waitFor({state: 'visible'});
+    await nameInput.fill('Test');
+
+    await iiPage.locator('button:has-text("Create identity")').click();
 
     const continueBtn = iiPage.locator('button:has-text("Continue")');
     await continueBtn.waitFor({state: 'visible'});

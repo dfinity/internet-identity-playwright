@@ -44,6 +44,7 @@ Use the extended fixtures in your tests to perform authentication flows.
 
 > [!NOTE]
 > The `signIn()` method automatically detects whether this is a first-time passkey flow or an existing passkey flow, handling the complexity for you.
+> When creating a new passkey for the first time, the identity name is set to "Test".
 
 ```javascript
 testWithII('should sign-in with a user', async ({page, iiPage}) => {
