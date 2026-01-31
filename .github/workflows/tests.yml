@@ -11,17 +11,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Prepare
         uses: ./.github/actions/prepare
-
       - name: Install demo dependencies
         run: npm ci
         working-directory: demo
-
       - name: Install Juno CLI
         run: npm i -g @junobuild/cli
-
       - name: Cache Docker layers for default image
         uses: actions/cache@v3
         with:
@@ -29,7 +25,6 @@ jobs:
           key: ${{ runner.os }}-docker-default-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-docker-default-
-
       - name: Run emulator
         run: |
           cd demo
@@ -38,25 +33,8 @@ jobs:
           juno emulator wait
           juno login --emulator --mode development --headless
           juno config apply --mode development --headless
-
       - name: Run default tests
         run: npm run e2e:ci
-
-      - name: Upload Playwright report on failure
-        uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 3
-
-      - name: Upload Playwright results on failure
-        uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 3
 
   may-merge:
     needs: ['tests']
