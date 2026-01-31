@@ -116,11 +116,14 @@ export class InternetIdentityPage {
       // The flows are different if it's the very first passkey - e.g. there is no browser cache - or
       // if the passkey (default account) is being reused. That's why here we try to detect which flow
       // should be executed. This way, we hide the complexity for the consumer of the plugin.
-      const mainBtn = iiPage
-        .getByRole('button', {name: continueWithFirstPasskey, exact: true})
-        .or(iiPage.getByRole('button', {name: continueWithExistingPasskey, exact: true}));
-
-      await mainBtn.isVisible();
+      await Promise.race([
+        iiPage
+          .getByRole('button', {name: continueWithFirstPasskey, exact: true})
+          .waitFor({state: 'visible'}),
+        iiPage
+          .getByRole('button', {name: continueWithExistingPasskey, exact: true})
+          .waitFor({state: 'visible'})
+      ]);
 
       const isFirstPasskey = iiPage.getByRole('button', {
         name: continueWithFirstPasskey,
