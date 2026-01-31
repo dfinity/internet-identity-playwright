@@ -88,7 +88,7 @@ export class InternetIdentityPage {
 
     await expect(this.page).toHaveTitle('Internet Identity');
 
-    const mainSignInBtn = this.page.locator('button:has-text("Sign in")');
+    const mainSignInBtn = this.page.getByRole('button', {name: 'Sign in', exact: true});
     await mainSignInBtn.isVisible();
   };
 
@@ -117,12 +117,15 @@ export class InternetIdentityPage {
       // if the passkey (default account) is being reused. That's why here we try to detect which flow
       // should be executed. This way, we hide the complexity for the consumer of the plugin.
       const mainBtn = iiPage
-        .locator(`button:has-text("${continueWithFirstPasskey}")`)
-        .or(iiPage.locator(`button:has-text("${continueWithExistingPasskey}")`));
+        .getByRole('button', {name: continueWithFirstPasskey, exact: true})
+        .or(iiPage.getByRole('button', {name: continueWithExistingPasskey, exact: true}));
 
       await mainBtn.isVisible();
 
-      const isFirstPasskey = iiPage.locator(`button:has-text("${continueWithFirstPasskey}")`);
+      const isFirstPasskey = iiPage.getByRole('button', {
+        name: continueWithFirstPasskey,
+        exact: true
+      });
 
       const fn = (await isFirstPasskey.isVisible())
         ? this.#signInWithFirstPasskey
@@ -146,11 +149,14 @@ export class InternetIdentityPage {
    * @private
    */
   #signInWithFirstPasskey = async ({iiPage}: {iiPage: Page}): Promise<void> => {
-    const initWizardBtn = iiPage.locator('button:has-text("Continue with passkey")');
+    const initWizardBtn = iiPage.getByRole('button', {
+      name: 'Continue with passkey',
+      exact: true
+    });
     await initWizardBtn.waitFor({state: 'visible'});
     await initWizardBtn.click();
 
-    const createBtn = iiPage.locator('button:has-text("Create new identity")');
+    const createBtn = iiPage.getByRole('button', {name: 'Create new identity', exact: true});
     await createBtn.waitFor({state: 'visible'});
     await createBtn.click();
 
@@ -158,9 +164,9 @@ export class InternetIdentityPage {
     await nameInput.waitFor({state: 'visible'});
     await nameInput.fill('Test');
 
-    await iiPage.locator('button:has-text("Create identity")').click();
+    await iiPage.getByRole('button', {name: 'Create identity', exact: true}).click();
 
-    const continueBtn = iiPage.locator('button:has-text("Continue")');
+    const continueBtn = iiPage.getByRole('button', {name: 'Continue', exact: true});
     await continueBtn.waitFor({state: 'visible'});
     await continueBtn.click();
   };
@@ -174,7 +180,7 @@ export class InternetIdentityPage {
    * @private
    */
   #signInWithExistingPasskey = async ({iiPage}: {iiPage: Page}): Promise<void> => {
-    await iiPage.locator('button:has-text("Continue")').click();
+    await iiPage.getByRole('button', {name: 'Continue', exact: true}).click();
   };
 
   /**
