@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/internet-identity-playwright",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A Playwright library to simplify the integration of Internet Identity authentication in E2E tests.",
   "license": "Apache-2.0",
   "repository": {
@@ -55,9 +55,9 @@
   },
   "devDependencies": {
     "@dfinity/eslint-config-oisy-wallet": "^0.2.3",
-    "@types/node": "^24.6.2",
+    "@types/node": "^25.1.0",
     "esbuild": "^0.27.2",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^5.9.3"
   },
