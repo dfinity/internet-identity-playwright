@@ -121,7 +121,8 @@ export class InternetIdentityPage {
       if (
         (await switchIdentityBtn.isVisible()) &&
         ((passkey?.account === undefined && (await switchIdentityBtn.innerText())) !== 'Test' ||
-          passkey?.account !== undefined)
+          (passkey?.account !== undefined &&
+            (await switchIdentityBtn.innerText()) !== passkey.account))
       ) {
         await this.#signInWithMultiAccount({iiPage, passkey});
         return;
