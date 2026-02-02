@@ -118,8 +118,17 @@ export class InternetIdentityPage {
       // otherwise the selected account might just be the default one created by Internet Identity.
       const switchIdentityBtn = iiPage.getByRole('button', {name: 'Switch identity'});
 
+      const switchIdentityExists = async (): Promise<boolean> => {
+        try {
+          await switchIdentityBtn.waitFor({state: 'visible', timeout: 2000});
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
       if (
-        (await switchIdentityBtn.isVisible()) &&
+        (await switchIdentityExists()) &&
         ((passkey?.account === undefined && (await switchIdentityBtn.innerText())) !== 'Test' ||
           (passkey?.account !== undefined &&
             (await switchIdentityBtn.innerText()) !== passkey.account))
