@@ -137,12 +137,6 @@ export class InternetIdentityPage {
         return;
       }
 
-      if (passkey?.account !== undefined && passkey.account !== '') {
-        throw new Error(
-          'Account parameter is only supported once an initial identity has been created.'
-        );
-      }
-
       const continueWithFirstPasskey = 'Continue with passkey';
       const continueWithExistingPasskey = 'Continue';
 
