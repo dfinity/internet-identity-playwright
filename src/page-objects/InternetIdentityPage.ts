@@ -100,16 +100,43 @@ export class InternetIdentityPage {
    * @param {Object} [params] - The optional arguments for the sign-in method.
    * @param {Object|null} [params.passkey] - Passkey authentication options. Defaults to null (no particular options).
    * @param {string} [params.passkey.selector] - The selector for the login button in your application. Defaults to [data-tid=login-button].
+   * @param {string} [params.passkey.account] - The account to sign in with. Defaults to "Test". If provided, an existing or new account will be used for the sign-in.
    * @returns {Promise<void>} A promise that resolves once the authentication flow is completed and the II page instance is closed.
    */
   signIn = async (
-    params: {
+    {
+      passkey
+    }: {
       passkey: {
         selector?: string;
+        account?: string;
       } | null;
     } = {passkey: null}
   ) => {
     const signInFlow = async ({iiPage}: {iiPage: Page}) => {
+      // If there was a previous sign-in within same session we have to use the multiple accounts selection
+      // otherwise the selected account might just be the default one created by Internet Identity.
+      const switchIdentityBtn = iiPage.getByRole('button', {name: 'Switch identity'});
+
+      const switchIdentityExists = async (): Promise<boolean> => {
+        try {
+          await switchIdentityBtn.waitFor({state: 'visible', timeout: 2000});
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      if (
+        (await switchIdentityExists()) &&
+        ((passkey?.account === undefined && (await switchIdentityBtn.innerText())) !== 'Test' ||
+          (passkey?.account !== undefined &&
+            (await switchIdentityBtn.innerText()) !== passkey.account))
+      ) {
+        await this.#signInWithMultiAccount({iiPage, passkey});
+        return;
+      }
+
       const continueWithFirstPasskey = 'Continue with passkey';
       const continueWithExistingPasskey = 'Continue';
 
@@ -138,7 +165,7 @@ export class InternetIdentityPage {
     };
 
     await this.#executeSignIn({
-      selector: params?.passkey?.selector,
+      selector: passkey?.selector,
       signInFlow
     });
   };
@@ -159,15 +186,37 @@ export class InternetIdentityPage {
     await initWizardBtn.waitFor({state: 'visible'});
     await initWizardBtn.click();
 
-    const createBtn = iiPage.getByRole('button', {name: 'Create new identity', exact: true});
-    await createBtn.waitFor({state: 'visible'});
-    await createBtn.click();
+    // We try to always reuse the default identity as the "Continue" button, if no account is selected
+    // always fallback on the first default identity created.
+    const existingBtn = iiPage.getByRole('button', {name: 'Use existing identity', exact: true});
+    await existingBtn.waitFor({state: 'visible'});
+    await existingBtn.click();
 
-    const nameInput = iiPage.locator('input[placeholder="Identity name"]');
-    await nameInput.waitFor({state: 'visible'});
-    await nameInput.fill('Test');
+    // When starting test with a fresh state, there is no default identity at all and one should be created.
+    const errorToast = iiPage.getByText(
+      "Cannot read properties of undefined (reading 'anchor_number')"
+    );
 
-    await iiPage.getByRole('button', {name: 'Create identity', exact: true}).click();
+    const hasNoDefaultIdentity = async (): Promise<boolean> => {
+      try {
+        await errorToast.waitFor({state: 'visible', timeout: 2000});
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    if (await hasNoDefaultIdentity()) {
+      const createBtn = iiPage.getByRole('button', {name: 'Create new identity', exact: true});
+      await createBtn.waitFor({state: 'visible'});
+      await createBtn.click();
+
+      const nameInput = iiPage.locator('input[placeholder="Identity name"]');
+      await nameInput.waitFor({state: 'visible'});
+      await nameInput.fill('Test');
+
+      await iiPage.getByRole('button', {name: 'Create identity', exact: true}).click();
+    }
 
     const continueBtn = iiPage.getByRole('button', {name: 'Continue', exact: true});
     await continueBtn.waitFor({state: 'visible'});
@@ -222,4 +271,82 @@ export class InternetIdentityPage {
 
     expect(iiPage.isClosed()).toBe(true);
   }
+
+  /**
+   * Signs in with Internet Identity using multiple accounts.
+   *
+   * This method toggles the multiple accounts feature, checks if the requested account exists,
+   * and either selects it or creates a new account with the provided name.
+   *
+   * Note: Internet Identity creates the first account with the name "My account" regardless of
+   * the name provided during the original creation flow.
+   *
+   * @param {Object} params - The optional arguments for the sign-in method.
+   * @param {Page} params.iiPage - The Internet Identity page instance.
+   * @param {Object} params.passkey - Passkey authentication options.
+   * @param {string} params.passkey.account - The account name to sign in with or create.
+   * @returns {Promise<void>} A promise that resolves once the authentication flow is completed.
+   * @private
+   */
+  #signInWithMultiAccount = async ({
+    iiPage,
+    passkey
+  }: {
+    iiPage: Page;
+    passkey: {
+      account?: string;
+    } | null;
+  }): Promise<void> => {
+    const account = passkey?.account ?? 'My account';
+
+    const multiAccountsToggle = iiPage.getByRole('switch', {name: 'Enable multiple accounts'});
+    await multiAccountsToggle.click();
+    await multiAccountsToggle.waitFor({state: 'visible'});
+
+    const accountList = iiPage.locator('ul[aria-label="Choose an account"]');
+
+    const selectedAccount = accountList.getByRole('button', {
+      name: `Continue with ${account}`
+    });
+
+    const selectedAccountExists = async (): Promise<boolean> => {
+      try {
+        await selectedAccount.waitFor({state: 'visible', timeout: 2000});
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // The account already exists. Select it to proceed with the sign-in
+    if (await selectedAccountExists()) {
+      await selectedAccount.click();
+      return;
+    }
+
+    const addAccountBtn = iiPage.getByRole('button', {name: 'Add another account', exact: true});
+    await addAccountBtn.waitFor({state: 'visible'});
+    await addAccountBtn.click();
+
+    const nameInput = iiPage.locator('input[placeholder="Account name"]');
+    await nameInput.waitFor({state: 'visible'});
+    await nameInput.fill(account);
+
+    // We define the button as default sign-in assuming that the consumer might want to login again in next test.
+    const defaultSignInBtn = iiPage.getByRole('checkbox', {
+      name: 'Set as default sign-in',
+      exact: true
+    });
+    await defaultSignInBtn.waitFor({state: 'visible'});
+    await defaultSignInBtn.click();
+
+    const createBtn = iiPage.getByRole('button', {name: 'Create account', exact: true});
+    await createBtn.waitFor({state: 'visible'});
+    await createBtn.click();
+
+    const selectNewAccount = accountList.getByRole('button', {
+      name: `Continue with ${account}`
+    });
+    await selectNewAccount.click();
+  };
 }

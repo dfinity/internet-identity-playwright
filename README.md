@@ -44,7 +44,7 @@ Use the extended fixtures in your tests to perform authentication flows.
 
 > [!NOTE]
 > The `signIn()` method automatically detects whether this is a first-time passkey flow or an existing passkey flow, handling the complexity for you.
-> When creating a new passkey for the first time, the identity name is set to "Test".
+> It is also worth noting that it always tries to reuse the same default identity that was created within a Playwright session to ensure the provided identity is reproducible.
 
 ```javascript
 testWithII('should sign-in with a user', async ({page, iiPage}) => {
@@ -65,6 +65,25 @@ testWithII('should sign-in with a user', async ({page, iiPage}) => {
   await page.goto('/');
 
   await iiPage.signIn({passkey: {selector: loginSelector}});
+});
+```
+
+When creating a new passkey for the first time, the identity name is set by default to "Test". You can customize this behavior or create other accounts with the parameter `account`.
+
+> [!NOTE]
+> Creating an account requires having signed in a first time within a Playwright session.
+
+```javascript
+const loginSelector = '#login';
+
+testWithII('should sign-in with a user', async ({page, iiPage}) => {
+  await page.goto('/');
+
+  await iiPage.signIn();
+
+  await page.locator('#logout').click();
+
+  await iiPage.signIn({passkey: {account: 'Hello World'}});
 });
 ```
 
