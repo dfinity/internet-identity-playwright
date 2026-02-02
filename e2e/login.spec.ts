@@ -4,8 +4,6 @@ import {DOCKER_CONTAINER} from './spec.constants';
 
 const loginSelector = '#login';
 
-testWithII.describe.configure({mode: 'serial'});
-
 testWithII.beforeEach(async ({iiPage}) => {
   await iiPage.waitReady(DOCKER_CONTAINER);
 });
