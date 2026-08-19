@@ -17,7 +17,7 @@
     "autoprefixer": "^10.5.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.2",
-    "vite": "^7.3.3",
+    "vite": "^8.2.1",
     "vite-plugin-node-polyfills": "^0.28.0"
   },
   "dependencies": {
